@@ -1,24 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import {Redirect, Route, Switch} from "react-router-dom";
+import {AllQuotesPage, NewQuotePage, QuoteDetailPage} from "./pages";
+import {Layout} from "./components/layout";
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+
+    <Layout>
+        <Switch>
+
+            <Route path="/" exact>
+                <Redirect to="/quotes" />
+            </Route>
+
+            <Route path="/quotes" exact>
+                <AllQuotesPage />
+            </Route>
+
+            <Route path="/quotes/quote/:id">
+                <QuoteDetailPage />
+            </Route>
+
+            <Redirect from="/quotes/quote/" to="/quotes" />
+
+
+            <Route path="/quotes/new-quote">
+                <NewQuotePage />
+            </Route>
+
+
+
+        </Switch>
+    </Layout>
   );
 }
 
