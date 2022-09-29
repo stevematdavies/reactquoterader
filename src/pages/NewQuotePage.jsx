@@ -1,9 +1,12 @@
 import {QuoteForm} from "../components";
+import {useHistory} from "react-router-dom";
 
 const NewQuotePage = () => {
 
+    const history = useHistory()
+
     const onAddQuote = newQuote => {
-        console.log(newQuote)
+        history.push("/quotes")
     }
 
     return <QuoteForm onAddQuote={onAddQuote}/>
