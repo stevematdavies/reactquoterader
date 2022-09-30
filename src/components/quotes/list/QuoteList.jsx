@@ -18,7 +18,7 @@ const QuoteList = ({quotes}) => {
         DEC: "DEC"
     }
 
-    const {search} = useLocation()
+    const {search, pathname} = useLocation()
     const queryParams = new URLSearchParams(search)
     const isSortAscending = queryParams.get('sort') === "ASC";
     const history = useHistory()
@@ -27,9 +27,8 @@ const QuoteList = ({quotes}) => {
 
     const sort = () => {
         const d = isSortAscending ? SortBy.DEC : SortBy.ASC
-        history.push(`/quotes?sort=${d}`)
+        history.push({ pathname, search:`sort=${d}`})
     }
-
 
     return (
         <Fragment>
