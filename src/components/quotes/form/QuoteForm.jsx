@@ -6,6 +6,7 @@ import {Prompt} from "react-router-dom";
 const QuoteForm = ({onAddQuote, isLoading}) => {
     const authorInputRef = useRef();
     const textInputRef = useRef();
+    const [startedTyping , setStartedTyping] = useState(false);
 
     function submitFormHandler(event) {
         event.preventDefault();
@@ -18,17 +19,14 @@ const QuoteForm = ({onAddQuote, isLoading}) => {
         onAddQuote({author: enteredAuthor, text: enteredText});
     }
 
-    const {enteredForm, setEnteredForm} = useState(false)
-
-    const onFormFocus = () => {
-        setEnteredForm(true)
-    }
-
     return (
         <Fragment>
-            <Prompt when={enteredForm} message={() => "Are you sure you want to leave, all your data will be lost?"} />
+            { <Prompt when={startedTyping} message={() => "Are you sure you want to leave, all your data will be lost?"}/> }
             <Card>
-                <form className={classes.form} onSubmit={submitFormHandler} onFocus={onFormFocus}>
+                <form
+                    className={classes.form}
+                    onChange={() => setStartedTyping(true)}
+                    onSubmit={submitFormHandler} >
                     {isLoading && (
                         <div className={classes.loading}>
                             <Spinner/>
