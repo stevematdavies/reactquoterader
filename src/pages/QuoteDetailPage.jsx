@@ -1,13 +1,13 @@
-import {Link, useLocation, useParams} from "react-router-dom";
+import {Link, Route, Routes, useLocation, useParams, Outlet} from "react-router-dom";
 import {Comments, HighlightedQuote, NoQuotesFound, Spinner} from "../components";
 import {useHttp} from "../hooks";
 import {getSingleQuote} from "../lib/api";
 import {Fragment, useEffect} from "react";
 
 
-export const Matched = ({pathname}) => (
+export const Matched = () => (
     <div className="centered">
-        <Link to={`${pathname}/comments`} className="btn--flat">
+        <Link to={`comments`} className="btn--flat">
             Load Comments
         </Link>
     </div>
@@ -17,13 +17,13 @@ const QuoteDetailPage = () => {
 
     const params = useParams();
     const qoteId = params.id;
-    const {pathname} = useLocation()
+    const { pathname } = useLocation()
 
-    const {sendRequest, status, data: quote, error} = useHttp(getSingleQuote, true)
+    const { sendRequest , status, data: quote, error } = useHttp(getSingleQuote, true)
 
     useEffect(() => {
         sendRequest(qoteId)
-    }, [sendRequest, qoteId])
+    },[sendRequest, qoteId])
 
     if (status === "pending") {
         return <div className="centered">
@@ -44,9 +44,13 @@ const QuoteDetailPage = () => {
     console.log(pathname)
 
     return <Fragment>
-        <HighlightedQuote {...quote} />
-        {pathname.includes("/comments") ? <Comments/> : <Matched pathname={pathname}/>}
-    </Fragment>
+            <HighlightedQuote {...quote} />
+            <Routes>
+                <Route path="comments" element={<Comments />} />
+                <Route path="" element={<Matched />} />
+            </Routes>
+            <Outlet />
+        </Fragment>
 };
 
 export default QuoteDetailPage;

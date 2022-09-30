@@ -6,7 +6,7 @@ function App() {
   return (
     <Layout>
         <Routes>
-            <Route path="/" element={ <Navigate to="/quotes" />}/>
+            <Route path="/" element={ <Navigate replace to="/quotes" />}/>
             <Route path="/quotes" element={<AllQuotesPage />} />
             <Route path="/quotes/quote/:id/*" element={<QuoteDetailPage />} />
             <Route path="/quotes/new-quote" element={ <NewQuotePage />} />>
