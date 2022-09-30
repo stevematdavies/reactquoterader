@@ -1,63 +1,60 @@
-import {useCallback, useReducer} from "react";
+import { useReducer, useCallback } from 'react';
 
+function httpReducer(state, action) {
+  if (action.type === 'SEND') {
+    return {
+      data: null,
+      error: null,
+      status: 'pending',
+    };
+  }
 
-const httpReducer = (state = {
-    data: null,
-    error: null,
-    status: "pending"
-}, action) => {
-    switch (action.type) {
-        case "SEND":
-            return {
-                ...state,
-                status: "pending"
-            }
-        case "SUCCESS":
-            return {
-                ...state,
-                data: action.resData,
-                status: "completed"
-            }
-        case "ERROR":
-            return {
-                ...state,
-                error: action.errorMessage,
-                status: "completed"
-            }
-        default:
-            return state
+  if (action.type === 'SUCCESS') {
+    return {
+      data: action.responseData,
+      error: null,
+      status: 'completed',
+    };
+  }
 
-    }
+  if (action.type === 'ERROR') {
+    return {
+      data: null,
+      error: action.errorMessage,
+      status: 'completed',
+    };
+  }
+
+  return state;
 }
 
-const useHttp = (reqFn, startWithPending = false) => {
+function useHttp(requestFunction, startWithPending = false) {
+  const [httpState, dispatch] = useReducer(httpReducer, {
+    status: startWithPending ? 'pending' : null,
+    data: null,
+    error: null,
+  });
 
-    const [httpState, dispatch] = useReducer(httpReducer, {
-        status: startWithPending ? 'pending' : null,
-        data: null,
-        error: null
-    })
+  const sendRequest = useCallback(
+    async function (requestData) {
+      dispatch({ type: 'SEND' });
+      try {
+        const responseData = await requestFunction(requestData);
+        dispatch({ type: 'SUCCESS', responseData });
+      } catch (error) {
+        dispatch({
+          type: 'ERROR',
+          errorMessage: error.message || 'Something went wrong!',
+        });
+      }
+    },
+    [requestFunction]
+  );
 
-    const sendRequest = useCallback(
-        async (reqData) => {
-            dispatch({type: "SEND"})
-            try {
-                const resData = await reqFn(reqData);
-                dispatch({type: "SUCCESS", resData})
-            } catch (e) {
-                dispatch({
-                    type: "ERROR",
-                    errorMessage: e.message || "Something went wrong",
-                });
-            }
-        },
-        [reqFn]
-    );
-
-    return {
-        sendRequest,
-        ...httpState
-    }
+  return {
+    sendRequest,
+    ...httpState,
+  };
 }
 
 export default useHttp;

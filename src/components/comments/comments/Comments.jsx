@@ -1,7 +1,11 @@
-import {useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 
 import classes from './Comments.module.css';
-import {QuoteForm} from "../../";
+import {CommentsList, NewCommentForm, Spinner} from "../../";
+import {useParams} from "react-router-dom";
+import {useHttp} from "../../../hooks";
+import {getAllComments} from "../../../lib/api";
+import {isPresent} from "../../../lib/helpers";
 
 const Comments = () => {
     const [isAddingComment, setIsAddingComment] = useState(false);
@@ -9,6 +13,39 @@ const Comments = () => {
     const startAddCommentHandler = () => {
         setIsAddingComment(true);
     };
+
+    const {sendRequest, status, data: fetchedComments} = useHttp(getAllComments)
+    const {id: quoteId} = useParams()
+
+    useEffect(() => {
+        sendRequest(quoteId)
+    }, [quoteId, sendRequest])
+
+    const onCommentAdded = useCallback(() => {
+        sendRequest(quoteId)
+    },[quoteId, sendRequest])
+
+    const getCommentsElement = () => {
+        if (status === "pending") {
+            return <div className="centered">
+                <Spinner/>
+            </div>
+        }
+
+        if (status === "completed" && isPresent(fetchedComments)) {
+            return <CommentsList comments={fetchedComments}/>
+        }
+
+        if (status === "completed" && !isPresent(fetchedComments)) {
+            return <p className="centered">
+                No comments added yet.
+            </p>
+        }
+
+        return null;
+    }
+
+
 
     return (
         <section className={classes.comments}>
@@ -18,8 +55,8 @@ const Comments = () => {
                     Add a Comment
                 </button>
             )}
-            {isAddingComment && <QuoteForm/>}
-            <p>Comments...</p>
+            {isAddingComment && <NewCommentForm quoteId={quoteId} onCommentAdded={onCommentAdded}/>}
+            {getCommentsElement()}
         </section>
     );
 };
