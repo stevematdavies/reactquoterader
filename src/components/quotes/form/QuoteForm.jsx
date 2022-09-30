@@ -1,12 +1,11 @@
-import {Fragment, useRef, useState} from 'react';
+import {Fragment, useRef} from 'react';
 import classes from './QuoteForm.module.css';
 import {Card, Spinner} from '../../';
-import {Prompt} from "react-router-dom";
+
 
 const QuoteForm = ({onAddQuote, isLoading}) => {
     const authorInputRef = useRef();
     const textInputRef = useRef();
-    const [startedTyping , setStartedTyping] = useState(false);
 
     function submitFormHandler(event) {
         event.preventDefault();
@@ -21,11 +20,9 @@ const QuoteForm = ({onAddQuote, isLoading}) => {
 
     return (
         <Fragment>
-            { <Prompt when={startedTyping} message={() => "Are you sure you want to leave, all your data will be lost?"}/> }
             <Card>
                 <form
                     className={classes.form}
-                    onChange={() => setStartedTyping(true)}
                     onSubmit={submitFormHandler} >
                     {isLoading && (
                         <div className={classes.loading}>

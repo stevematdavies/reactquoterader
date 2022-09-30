@@ -2,7 +2,7 @@ import {Fragment} from 'react';
 
 import {QuoteItem} from '../../';
 import classes from './QuoteList.module.css';
-import {useHistory, useLocation} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 
 
 const sortQuotes = (quotes, isAsc) =>
@@ -21,13 +21,15 @@ const QuoteList = ({quotes}) => {
     const {search, pathname} = useLocation()
     const queryParams = new URLSearchParams(search)
     const isSortAscending = queryParams.get('sort') === "ASC";
-    const history = useHistory()
+
+
+    const navigator = useNavigate()
 
     const sortedQuotes = sortQuotes(quotes, isSortAscending)
 
     const sort = () => {
         const d = isSortAscending ? SortBy.DEC : SortBy.ASC
-        history.push({ pathname, search:`sort=${d}`})
+        navigator(`${pathname}?sort=${d}`)
     }
 
     return (

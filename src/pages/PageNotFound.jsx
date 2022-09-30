@@ -1,4 +1,3 @@
-import {NoQuotesFound} from "../components";
 import classes from "./Pages.module.css"
 import {Link} from "react-router-dom";
 
