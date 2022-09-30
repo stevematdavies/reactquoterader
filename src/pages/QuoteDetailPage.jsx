@@ -1,5 +1,5 @@
-import {Link, Route, Routes, useLocation, useParams} from "react-router-dom";
-import {Comments, HighlightedQuote, NoQuotesFound, Spinner} from "../components";
+import {Link, Outlet, useLocation, useParams} from "react-router-dom";
+import {HighlightedQuote, NoQuotesFound, Spinner} from "../components";
 import {useHttp} from "../hooks";
 import {getSingleQuote} from "../lib/api";
 import {Fragment, useEffect} from "react";
@@ -45,10 +45,7 @@ const QuoteDetailPage = () => {
 
     return <Fragment>
             <HighlightedQuote {...quote} />
-            <Routes>
-                <Route path="comments" element={<Comments />} />
-                <Route path="" element={<Matched />} />
-            </Routes>
+            <Outlet />
         </Fragment>
 };
 
